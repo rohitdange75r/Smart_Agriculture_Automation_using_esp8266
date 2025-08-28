@@ -1,8 +1,8 @@
-🌱 Smart Farm Automation with Three-Phase Pump Protection (ESP8266)
+🌱 Smart Agriculture Automation using ESP8266
 
 📌 Introduction
 
-This project focuses on **protecting and automating a three-phase water pump** using an **ESP8266 NodeMCU** with built-in Wi-Fi. The system ensures reliable farm irrigation by monitoring multiple parameters, providing pump safety, and offering remote control via a web interface.
+This project focuses on **protecting and automating a three-phase water pump** using an *ESP8266 NodeMCU*. The system ensures reliable farm irrigation by monitoring multiple parameters, providing pump safety, and offering remote control via a web interface.
 
 🔧 Features
 
@@ -35,4 +35,3 @@ To solve these issues, I decided to design a **smart farm automation system**. W
 ✔️ Saves water and improves usage efficiency
 ✔️ Helps in crop management through environmental monitoring
 ✔️ Remote access and control through IoT
-o also create a **diagram (block diagram / system architecture)** that visually explains your project for the README?
