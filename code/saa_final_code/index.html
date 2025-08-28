@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture WEB Server</title>
+
+    <style>
+        html {
+            font-family: Arial;
+            display: inline-block;
+            margin: 0px auto;
+            text-align: center;
+        }
+
+        body {
+            /* background-color: rgb(96, 184, 24); */
+            background-color: white;
+            margin-bottom: -10px;
+            font-size: 20px;
+        }
+
+        h1 {
+            /* margin-bottom: 10pc; */
+            margin-top: -1pc;
+            color: #070812;
+            padding: 4vh;
+            font-size: 20px;
+        }
+
+        .button {
+            /* display: inline-block; */
+            background-color: #24be16;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            padding: 8px 5px;
+            text-decoration: none;
+            font-size: 20px;
+            margin-bottom: 0;
+            margin: 2px;
+
+        }
+
+        .button2 {
+            background-color: #e00d29;
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .card-grid {
+            max-width: 500px;
+            margin: 0 auto;
+            display: grid;
+            grid-gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+        }
+
+        .card {
+            max-height: 300px;
+            background-color: rgb(36, 156, 192);
+            box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
+            margin-bottom: -5.8pc;
+            border: none;
+            border-radius: 20px;
+            vertical-align: middle;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #034078
+        }
+
+        .p {
+            margin-top: 1pc;
+        }
+
+
+        .units {
+            font-size: 20px;
+        }
+
+        .phase {
+            font-size: 20px;
+            vertical-align: middle;
+            padding-bottom: 15px;
+        }
+
+        .main {
+            margin-top: -5pc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>SMART AGRICULTURE AUTOMATION USING ESP8266 NODE MCU</h1>
+    <div class="main">
+        <div class="content">
+            <div class="card-grid">
+                <div class="card">
+                    <div class="phase">
+                        <div id="demo">
+                            <div class="p">
+                                <div style="color: rgb(12, 8, 17); margin-bottom: -1pc;">Switch State : <span
+                                        id="PUMPstate">NA</span>
+                                </div><br>
+                                <button class="button" type="button" onclick="sendData(1)">PUMP ON</button>
+                                <button class="button button2" type="button" onclick="sendData(0)">PUMP OFF</button><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card-grid">
+            <div class="card">
+                <div class="phase">
+                    <div class="p">
+                        (R)Phase1 Mode : <span id="protection1">NA</span><br>
+                        (Y)Phase2 Mode : <span id="protection2">NA</span><br>
+                        (B)Phase3 Mode : <span id="protection3">NA</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card-grid">
+            <div class="card">
+                <div class="phase">
+                    <div class="p">
+                        Pump ( Run ) : <span id="protection4">NA</span><br>
+                        Pump ( Mode) : <span id="protection5">NA</span><br>
+                        Pump (State) : <span id="pumpstate">NA</span><br>
+                        Manual Switch : <span id="ManualSwitch">NA</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card-grid">
+            <div class="card">
+                <div class="phase">
+                    <div class="p">
+                        (R)PhaseVoltage1 = <span id="ADCValue1">0</span>
+                        <span>V</span><br>
+                        (Y)PhaseVoltage2 = <span id="ADCValue2">0</span>
+                        <span>V</span><br>
+                        (B)PhaseVoltage3 = <span id="ADCValue3">0</span>
+                        <span>V</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card-grid">
+            <div class="card">
+                <div class="phase">
+                    <div class="p">
+                        FlowRate = <span id="FlowRate">0</span>
+                        <span>L/min</span><br>
+                        FlowMilliLitres = <span id="FlowMilliLitres">0</span>
+                        <span>mL</span><br>
+                        FlowLitres = <span id="FlowLitres">0</span>
+                        <span>L</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card-grid">
+            <div class="card">
+                <div class="phase">
+                    <div class="p">
+                        SoilMoisture = <span id="Analog_input">0</span>
+                        <span>%</span><br>
+                        Humidity = <span id="Humidity">0</span>
+                        <span>%</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card-grid">
+            <div class="card">
+                <div class="phase">
+                    <div class="p">
+                        (C)Temperature = <span id="Temperature_c">0</span>
+                        <sup class="units">°C</sup><br>
+                        (F)Temperature = <span id="Temperature_f">0</span>
+                        <sup class="units">°F</sup><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function sendData(pump) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("PUMPstate").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "setPUMP?PUMPstate=" + pump, true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData1();
+        }, 500); //2000mSeconds update rate
+
+        function getData1() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("protection1").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readprotection1", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData2();
+        }, 500); //2000mSeconds update rate
+
+        function getData2() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("protection2").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readprotection2", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData3();
+        }, 500); //2000mSeconds update rate
+
+        function getData3() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("protection3").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readprotection3", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData4();
+        }, 500); //2000mSeconds update rate
+
+        function getData4() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("protection4").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readprotection4", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData5();
+        }, 500); //2000mSeconds update rate
+
+        function getData5() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("protection5").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readprotection5", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData6();
+        }, 500); //2000mSeconds update rate
+
+        function getData6() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("pumpstate").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readpumpstate", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData7();
+        }, 500); //2000mSeconds update rate
+
+        function getData7() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("ADCValue1").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readADC1", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData8();
+        }, 500); //2000mSeconds update rate
+
+        function getData8() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("ADCValue2").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readADC2", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData9();
+        }, 500); //2000mSeconds update rate
+
+        function getData9() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("ADCValue3").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readADC3", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData10();
+        }, 500); //2000mSeconds update rate
+
+        function getData10() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("FlowRate").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readFlowRate", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData11();
+        }, 500); //2000mSeconds update rate
+
+        function getData11() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("FlowMilliLitres").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readFlowMilliLitres", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData12();
+        }, 500); //2000mSeconds update rate
+
+        function getData12() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("FlowLitres").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readFlowLitres", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData13();
+        }, 500); //2000mSeconds update rate
+
+        function getData13() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("Analog_input").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readAnalog", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData14();
+        }, 500); //2000mSeconds update rate
+
+        function getData14() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("Humidity").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readHumidity", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData15();
+        }, 500); //2000mSeconds update rate
+
+        function getData15() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("Temperature_c").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readTemperature_c", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData16();
+        }, 500); //2000mSeconds update rate
+
+        function getData16() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("Temperature_f").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readTemperature_f", true);
+            xhttp.send();
+        }
+
+        setInterval(function () {
+            // Call a function repetatively with 2 Second interval
+            getData17();
+        }, 500); //2000mSeconds update rate
+
+        function getData17() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("ManualSwitch").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "readmanualswitch", true);
+            xhttp.send();
+        }
+
+    </script>
+</body>
+
+</html>
