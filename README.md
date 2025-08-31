@@ -1,5 +1,4 @@
-🌱 Smart Agriculture Automation using ESP8266
-Final Year Project – 2023
+🌱 Smart Agriculture Automation using ESP8266 (Final Year Project)
 
 📌 Introduction
 
